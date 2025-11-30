@@ -6,18 +6,14 @@ class Solution {
     }
     private int cal(String s){
         int res = 0, num = 0, sign = 1;
-
         while (i < s.length()) {
             char c = s.charAt(i++);
-
             if (Character.isDigit(c)) {
                 num = num*10+(c - '0');
             }
-
             else if (c == '(') {
                 num = cal(s);   
             }
-
             else if (c == ')') {
                 return res + sign * num; 
             }
