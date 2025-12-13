@@ -1,36 +1,21 @@
 class Solution {
 public:
-    int swimInWater(vector<vector<int>>& grid) {
-        int n = grid.size();
-
-        vector<vector<bool>> vis(n,vector<bool>(n,false));
-        vector<vector<int>> dis(n,vector<int>(n,1e9));
-        priority_queue<pair<int,pair<int,int>>,vector<pair<int,pair<int,int>>>,greater<pair<int,pair<int,int>>>> pq;
-
-        int dx[4]={0,0,-1,1}; int dy[4]={1,-1,0,0};
-        pq.push({grid[0][0],{0,0}});
-        vis[0][0]=true;
-        dis[0][0]=grid[0][0];
-        while(!pq.empty())
-        {
-            auto top = pq.top(); pq.pop();
-            int tm = top.first;
-            int x = top.second.first; int y = top.second.second;
-            dis[x][y]=tm;
-            for(int i=0;i<4;i++){
-                int x1 = x+dx[i]; int y1 = y+dy[i];
-                if(x1>=0 && x1<n && y1>=0 && y1<n){
-                    if(!vis[x1][y1]){
-                        int t = grid[x1][y1];
-                        int actual = max(t,tm);
-                        vis[x1][y1]=true;
-                        pq.push({actual,{x1,y1}});
-                    }
-                }
-            }
+    long long rec(int man,int low, int high,vector<vector<vector<int>>>&dp,vector<int>&piles){
+        if(dp[man][low][high]!=-1) return dp[man][low][high];
+        if(low==high) return 0;
+        if(man&1){
+            dp[man][low][high]=min(rec(man^1,low+1,high,dp,piles),rec(man^1,low,high-1,dp,piles));
         }
+        return dp[man][low][high]=max(piles[low]+rec(man^1,low+1,high,dp,piles),piles[high]+rec(man^1,low,high-1,dp,piles));
+    }
 
-        return dis[n-1][n-1];
-        
+    bool stoneGame(vector<int>& piles) {
+        int n=piles.size();
+        int tot=accumulate(piles.begin(),piles.end(),0);
+        vector<vector<vector<int>>>dp(2,vector<vector<int>>(n+1,vector<int>(n+1,-1)));
+        bool f1=true;
+        long long z=rec(0,0,n-1,dp,piles);
+        if(z>tot/2) return true;
+        return false;
     }
 };
