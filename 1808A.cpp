@@ -36,6 +36,6 @@ int main() {
 
         cout << bestNum << "\n";
     }
-    return 0;
+    
 }
 
